@@ -1,5 +1,6 @@
 const express = require('express')
 const crypto = require('crypto')
+const session = require('express-session')
 require('./lib/mongoose')
 const User = require('./models/User')
 
@@ -8,20 +9,36 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(express.static('./public'))
+app.set('view engine', 'ejs')
+app.use(session({
+  secret: '($*YA)*@#12asd^%#',
+  resave: false,
+  saveUninitialized: true
+}))
 
-let session = false
+app.get('/', (req, res) => {
+  res.render('main', { user: req.session.user })
+})
+
+app.get('/registry', (req, res) => {
+  res.render('registry')
+})
+
 app.post('/login', async (req, res) => {
   const { body: { id, pw } } = req
   // encrypted password
-  if (session) return res.send('로그인이 이미 되어있습니다!')
   const epw = crypto.createHash('sha512').update(id + 'digitech' + pw + '!^*(sd').digest('base64')
-  const data = await User.find({ id, pw: epw })
-  if (data.length) session = true
-  res.json(data)
+  const data = await User.findOne({ id, pw: epw })
+  if (data) {
+    req.session.user = data
+    res.redirect('/')
+  } else {
+    res.send('로그인에 실패하셨습니다.')
+  }
 })
 
 app.get('/logout', function (req, res) {
-  session = false
+  delete req.session.user
   res.redirect('/')
 })
 
