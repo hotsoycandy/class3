@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class='wrap'>
+    <div class="post-wrap">
+      <h1>게시판</h1>
+      <ul>
+          <% posts.forEach((post, i) => { %>
+            <li><%= (i + 1) %> | <%= post.title %> | <%= post.createAt %> </li>
+          <% }) %>
+      </ul>
+      <br />
+      <a href='/posts/create'><button>새로운 게시물</button></a>
+    </div>
+  </div>
+</body>
+</html>

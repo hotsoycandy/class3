@@ -3,6 +3,7 @@ const crypto = require('crypto')
 const session = require('express-session')
 require('./lib/mongoose')
 const User = require('./models/User')
+const Post = require('./models/Post')
 
 const app = express()
 // middleware
@@ -20,8 +21,28 @@ app.get('/', (req, res) => {
   res.render('main', { user: req.session.user })
 })
 
+app.get('/posts', async (req, res) => {
+  const posts = await Post.find()
+  res.render('posts', { posts, user: req.session.user })
+})
+
+app.get('/posts/create', (req, res) => {
+  if (!req.session.user) return res.redirect('/')
+  res.render('createPost')
+})
+
 app.get('/registry', (req, res) => {
   res.render('registry')
+})
+
+app.post('/posts', (req, res) => {
+  // 로그인 안돼있을 때 메인으로 가는 코드
+  if (!req.session.user) return res.redirect('/')
+
+  const { body: { title, content } } = req
+  // DB에 실제로 들어가는 코드
+  Post.create({ title, content, writer: req.session.user._id })
+  res.redirect('/posts')
 })
 
 app.post('/login', async (req, res) => {
