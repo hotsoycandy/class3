@@ -12,7 +12,9 @@
       <h1>게시판</h1>
       <ul>
           <% posts.forEach((post, i) => { %>
-            <li><%= (i + 1) %> | <%= post.title %> | <%= post.createAt %> </li>
+            <a href='/posts/<%= post._id %>'>
+              <li><%= (i + 1) %> | <%= post.title %> | <%= post.createAt %> </li>
+            </a>
           <% }) %>
       </ul>
       <br />

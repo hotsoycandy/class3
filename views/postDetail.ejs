@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class='wrap'>
+    <div class="post-wrap">
+      <h1><%= post.title %></h1>
+      <div class='content'><%= post.content %></div>
+
+      <% // if (user && user._id === post.writer) { %>
+        <button>수정</button>
+        <form action="/posts/<%= post._id %>?_method=DELETE" method="post">
+          <button type='submit'>삭제</button>
+        </form>
+      <% // }
+        post.createAt.setHours(post.createAt.getHours() + 9)
+        post.updateAt.setHours(post.updateAt.getHours() + 9)
+      %>
+      <span>| 작성자 : <%= post.writer %></span>
+      <span>| 조회수 : <%= post.hit %></span>
+      <span>| 게시일 : <%= post.createAt.toISOString() %></span>
+      <span>| 수정일 : <%= post.updateAt.toISOString() %></span>
+
+      <!-- <ul class='comment-list'>
+        <li>
+          <p>작성자: ㅁㅁ</p>
+          <p>어쩌구 저쩌구</p>
+          <p>2020-12-03T10:41:40.268Z</p>
+          <button>삭제</button>
+        </li>
+      </ul> -->
+    </div>
+  </div>
+</body>
+</html>

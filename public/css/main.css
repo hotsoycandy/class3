@@ -75,3 +75,21 @@ li { list-style: none; }
   margin: 30px 0;
   border: 1px solid black;
 }
+
+.content {
+  width: 100%;
+  min-height: 200px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 20px 0;
+}
+
+.comment-list {
+  margin-top: 30px;
+}
+
+.comment-list li {
+  padding-bottom: 10px;
+  border-bottom: 2px solid black;
+}

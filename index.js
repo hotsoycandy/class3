@@ -1,6 +1,8 @@
 const express = require('express')
 const crypto = require('crypto')
 const session = require('express-session')
+const methodOverride = require('method-override')
+
 require('./lib/mongoose')
 const User = require('./models/User')
 const Post = require('./models/Post')
@@ -9,6 +11,7 @@ const app = express()
 // middleware
 app.use(express.json())
 app.use(express.urlencoded())
+app.use(methodOverride('_method'))
 app.use(express.static('./public'))
 app.set('view engine', 'ejs')
 app.use(session({
@@ -29,6 +32,13 @@ app.get('/posts', async (req, res) => {
 app.get('/posts/create', (req, res) => {
   if (!req.session.user) return res.redirect('/')
   res.render('createPost')
+})
+
+
+app.get('/posts/:postId', async (req, res) => {
+  const postId = req.params.postId
+  const post = await Post.findOneAndUpdate({ _id: postId }, { $inc: { hit: 1 } }, { new: true })
+  res.render('postDetail', { post, user: req.session.user })
 })
 
 app.get('/registry', (req, res) => {
@@ -56,6 +66,12 @@ app.post('/login', async (req, res) => {
   } else {
     res.send('로그인에 실패하셨습니다.')
   }
+})
+
+app.delete('/posts/:postId', async (req, res) => {
+  const postId = req.params.postId
+  await Post.deleteOne({ _id: postId })
+  res.redirect('/posts')
 })
 
 app.get('/logout', function (req, res) {
