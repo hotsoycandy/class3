@@ -13,7 +13,9 @@
       <div class='content'><%= post.content %></div>
 
       <% // if (user && user._id === post.writer) { %>
-        <button>수정</button>
+        <form action="/posts/<%= post._id %>?_method=PUT" method="post">
+          <button type='submit'>수정</button>
+        </form>
         <form action="/posts/<%= post._id %>?_method=DELETE" method="post">
           <button type='submit'>삭제</button>
         </form>
@@ -26,14 +28,25 @@
       <span>| 게시일 : <%= post.createAt.toISOString() %></span>
       <span>| 수정일 : <%= post.updateAt.toISOString() %></span>
 
-      <!-- <ul class='comment-list'>
-        <li>
-          <p>작성자: ㅁㅁ</p>
-          <p>어쩌구 저쩌구</p>
-          <p>2020-12-03T10:41:40.268Z</p>
-          <button>삭제</button>
-        </li>
-      </ul> -->
+      <% if (user) { %>
+        <form style="margin-top: 20px;" action="/posts/<%= post._id %>/comments" method="post">
+          <textarea style="width: 70%; height: 50px; resize: none;" name="content"></textarea>
+          <button>댓글작성</button>
+        </form>
+      <% } %>
+
+      <ul class='comment-list'>
+        <% post.comments.forEach((comment) => { %>
+          <li>
+            <p>작성자: <%= comment.writer %></p>
+            <p><%= comment.content %></p>
+            <p><%= comment.createAt %></p>
+            <form action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE" method="post">
+              <button type='submit'>삭제</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
     </div>
   </div>
 </body>

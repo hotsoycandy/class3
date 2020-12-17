@@ -68,6 +68,36 @@ app.post('/login', async (req, res) => {
   }
 })
 
+// 원래는 페이지를 보여주는 API 이기 때문에 get으로 해야됨
+app.put('/posts/:postId', async (req, res) => {
+  const postId = req.params.postId
+  const post = await Post.findOne({ _id: postId })
+  res.render('updatePost', { post })
+})
+
+app.put('/posts/:postId/update', async (req, res) => {
+  const postId = req.params.postId
+  const { body: { title, content } } = req
+  await Post.updateOne({ _id: postId }, { title, content })
+  res.redirect(`/posts/${postId}`)
+})
+
+app.post('/posts/:postId/comments', async (req, res) => {
+  const postId = req.params.postId
+  const writer = req.session.user._id
+  const { body: { content } } = req
+  await Post.updateOne({ _id: postId }, { $push: { comments: { content, writer } } })
+  res.redirect(`/posts/${postId}`)
+})
+
+app.delete('/posts/:postId/comments/:commentId', async (req, res) => {
+  const { params: { postId, commentId } } = req
+
+  await Post.updateOne({ _id: postId }, { $pull: { comments: { _id: commentId } } })
+
+  res.redirect(`/posts/${postId}`)
+})
+
 app.delete('/posts/:postId', async (req, res) => {
   const postId = req.params.postId
   await Post.deleteOne({ _id: postId })

@@ -9,8 +9,9 @@ const postSchema = mongoose.Schema({
   createAt: { type: Date, required: true, default: () => new Date() },
   updateAt: { type: Date, required: true, default: () => new Date() },
 
-  comment: [{
+  comments: [{
     content: { type: String, required: true },
+    writer: { type: String, required: true },
     createAt: { type: String, required: true, default: () => new Date() },
     isEdited: { type: Boolean, required: true, default: false }
   }]
