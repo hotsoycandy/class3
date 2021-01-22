@@ -21,7 +21,8 @@ app.use(session({
 }))
 
 app.get('/', (req, res) => {
-  res.render('main', { user: req.session.user })
+  const { message } = req.query
+  res.render('main', { user: req.session.user, message })
 })
 
 app.get('/posts', async (req, res) => {
@@ -30,10 +31,9 @@ app.get('/posts', async (req, res) => {
 })
 
 app.get('/posts/create', (req, res) => {
-  if (!req.session.user) return res.redirect('/')
+  if (!req.session.user) return res.redirect('/?message=로그인을 한 후 글을 작성해주세요')
   res.render('createPost')
 })
-
 
 app.get('/posts/:postId', async (req, res) => {
   const postId = req.params.postId
@@ -47,7 +47,7 @@ app.get('/registry', (req, res) => {
 
 app.post('/posts', (req, res) => {
   // 로그인 안돼있을 때 메인으로 가는 코드
-  if (!req.session.user) return res.redirect('/')
+  if (!req.session.user) return res.redirect('/?message=로그인을 한 후 글을 작성해주세요')
 
   const { body: { title, content } } = req
   // DB에 실제로 들어가는 코드
@@ -64,7 +64,7 @@ app.post('/login', async (req, res) => {
     req.session.user = data
     res.redirect('/')
   } else {
-    res.send('로그인에 실패하셨습니다.')
+    res.redirect('/?message=로그인에 실패하셨습니다.')
   }
 })
 
